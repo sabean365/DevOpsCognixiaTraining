@@ -10,7 +10,7 @@ sudo su - -> sets to root user
 
 sudo hostnamectl set-hostname thinknyx-<name> && bash -> will reset hostname to thinksys-<name> on your screen
 
-Basic steps on the server
+Basic steps on the server to install Apache2
     1. sudo su - -> sets to root user (like admin)
     2. apt-get update -> updates all files on your server (can also use just apt and not apt-get on new Debian/Ubuntu servers)
     3. apt-get install apache2 -y -> installs Apache2 on your server at port 80
