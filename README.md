@@ -1,27 +1,10 @@
-# DevOpsCognixiaTraining
+# Day 1: Intro to Cloud - AWS -> Linux -> using troubleshooting in Linux
+
+## Cloud Basics <img width="48" height="48" src="https://img.icons8.com/emoji/48/cloud-emoji.png" alt="cloud-emoji"/>
+
+## Linux Basics <img width="48" height="48" src="https://img.icons8.com/color/48/linux--v1.png" alt="linux--v1"/>
+
+### Using Ubuntu <img width="48" height="48" src="https://img.icons8.com/color/48/ubuntu--v1.png" alt="ubuntu--v1"/>
 
 
-## Day 1: Intro to Cloud - AWS -> Linux -> using troubleshooting in Linux
-
-## Days 2,3 : DevOps -> Terraform
-
-## Days 4,5,6,7: CM -> Configuration Management (Ansible) -> OpenTofu, Salt Stack
-
-## Days 8,9 days: Containerization -> Docker - Scanning images
-
-## Days 10, 11, 12: K8S
-
-## Days 13,14: Git -> BitBucket
-
-## Days 15,16: CICD Automation (Jenkins) Jenkinsfile
-
-## Day 17: Monitoring/Dashboarding -> Prometheus/Grafana
-
-## Day 18,19,20: PingID (IAM)
-
-## Days 21,22, .5-23  : OpenShift (OKS)
-
-## Day 23,24: Capstone Project
-
-## Day 25: Presentations
 
