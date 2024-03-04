@@ -1,0 +1,148 @@
+
+
+						PLAN
+						
+Day 1: Intro to Cloud - AWS -> Linux -> using troubleshooting in Linux
+
+Days 2,3 : DevOps -> Terraform
+
+Days 4,5,6,7: CM -> Configuration Management (Ansible) -> OpenTofu, Salt Stack
+
+Days 8,9 days: Containerization -> Docker - Scanning images
+
+Days 10, 11, 12: K8S
+
+Days 13,14: Git -> BitBucket
+
+Days 15,16: CICD Automation (Jenkins) Jenkinsfile
+
+Day 17: Monitoring/Dashboarding -> Prometheus/Grafana
+
+Day 18,19,20: PingID (IAM)
+
+Days 21,22, .5-23  : OpenShift (OKS)
+
+Day 23,24: Capstone Project
+
+Day 25: Presentations
+
+
+
+						Daily Schedule
+
+Start 9 am EST
+
+Break: 10:45 am EST
+
+Lunch: 12:30 pm EST
+
+Break: 3:00 pm EST
+
+Sync Time: 60 min
+
+
+In DevOps Terms -> Application -> Automtion - installing packages, configuring files, service start or stop
+
+1. Web server -> Apache2 (only legacy uses Apache1)
+
+2. DB -> MongoDB
+
+3. Containerization -> Docker
+
+4. Pods/Nodes -> K8S
+
+
+
+
+Costs that remain - regardless of scalability
+1. Hardware (CPU + Memory)
+2. Storage
+3. Public IP
+4. Network - edge containers - data transfer
+
+
+
+IN DEVOPS TERMS:
+
+IaaS - Infra as a service is a cloud-based service that allows resources to be delivered to organizations virtually (or through the cloud). IaaS tools help organizations build and manage servers, networks, operating systems, 
+	and data storage without needing to buy hardware. 
+The advantages of IaaS
+    Scalable. With this model, you can quickly ramp up the power on projects that are facing critical workload peaks. This means you get more responsiveness to ensure business continuity. This flexibility will give you the 
+		ultimate peace of mind, especially if your projects include sensitive data.
+    Customizable. You can build a virtual infrastructure that fits your needs, and get a catalog of resources.
+    Accessible. Maintaining your own physical infrastructure requires heavy investment. By outsourcing this type of resource to a cloud provider, you can get the same services at a lower cost.
+
+IaaS use examples:
+    Hosting services: Make your complex websites, applications, and software accessible. This model is suitable for a resource-intensive set of IT services.
+    Resilience: You can use IaaS to build a model for storing and recovering your data (backups) in the event of an incident. A disaster recovery plan (DRP) is an essential element for ensuring both business continuity and high 
+		availability for your web applications.
+    Developing artificial intelligence (AI): This technology uses a lot of resources (CPU, RAM, storage space, bandwidth) because it involves storing and analyzing high volumes of data (big data), as well as training machine 
+		learning algorithms. This is why additional resources available at any time are a real asset for your AI projects.
+
+
+PaaS - Platform as a service provides developers with a framework they can use to build custom applications. PaaS doesn’t deliver software over the internet, but rather a platform that developers can use to create online 
+	software and apps. 
+The advantages of PaaS
+    Optimization. You can help your teams focus on their core business, and avoid having to maintain the platform. They will save them time as a result and can track their work clearly.
+    Centralization. Group your information on the platform to improve collaboration between your teams.
+    Cost reduction. You don’t have to invest in an IT infrastructure to host your platform, or train maintenance teams — your provider takes care of it all.
+
+PaaS use examples:
+    Development: PaaS simplifies work for DevOps engineers by enabling them to create and deploy their code on optimized environments. Some of these solutions even include CI/CD (continuous distribution), which ensures that the 
+		process of delivering applications to users is seamless. These solutions are also compatible with a wide variety of programming languages. This is the most popular use for PaaS services.
+    CRM: With these solutions, you can improve how you manage customer data. CRM tools have optimized interfaces and low-code building modes, so non-technical employees can optimize their applications. Salesforce is a great 
+		example of this platform type.
+    Data management: There are cloud platforms available to help you exploit your data. For example, Apache Kafka helps you structure your data streams, and extract key information on your applications.
+
+
+SaaS - Software as a service refers to cloud-based software that is hosted online by a company, is available for purchase on a subscription basis, and is delivered to buyers via the internet.
+The advantages of SaaS
+    It saves you time. This is the main advantage of SaaS — you get the cloud solutions you need quickly and easily, and you do not need to spend time monitoring the physical infrastructure.
+    It is predictable. By paying a fixed monthly or annual subscription, you control your budget even more.
+    It is simple. Choose your application or software, and distribute the user licenses between your teams — it really is that quick and simple.
+
+SaaS use examples:
+    Security: Data encryption software for your transactions or to store your company's passwords, for example.
+    CRM: There are many CRM software products available on the market to manage your customer data. Most of them work via an API, which makes them very easy to use.
+    BPM: SaaS software represents a solid asset for managing your business processes. You can use it to centralize your data and get a simplified overview.
+
+4 Types of Clouds
+Public Cloud: Shares resources with other companies
+Private Cloud: Government, Medical, More restrictions and dedicated VPCs - specific set of users
+Hybrid Cloud: On-Prem and Cloud combined
+Community Cloud: can access if join community - being crafted for a community
+
+AWS - more than 2 decades - grouping many online stores
+
+IAM - Identity and Access Management
+Gives access
+
+Policies - Gives access to certain resources
+
+EC2 Setup
+Top right can launch instance
+Go for Ubuntu OS - 22.04 LTS - 64-bit xid86 - t2.micro -> create new key pair thinknyx-cognixia-jump-sarah -> RSA -> pem
+Use default network -> any subnet -> access from laptop using SSH key and pubic IP -> Allos SSH traffic from Anywhere 0.0.0.0/0
+Storage - up  to 30 GB is free -> 8 GIB - gp2
+
+Linux Basics
+df -h -> shows filesystem usage
+
+lsblk -> shows block devices
+
+sudo su -- -> sets to root user 
+
+sudo hostnamectl set-hostname thinknyx-<name> && bash -> will reset hostname to thinksys-<name> on your screen
+
+Basic steps on the server
+    1. sudo su - -> sets to root user (like admin)
+    2. apt-get update -> updates all files on your server (can also use just apt and not apt-get on new Debian/Ubuntu servers)
+    3. apt-get install apache2 -y -> installs Apache2 on your server at port 80
+    4. curl localhost -> will show Apache's html index page
+    5. echo "<br>Hi from `hostname` at `date`.</br>" > /var/www/html/index.html -> replacing the index.html file with your code
+    6. curl localhost -> will show your new code
+
+
+
+
+
