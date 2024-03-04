@@ -1,0 +1,39 @@
+
+Linux Basics
+df -h -> shows filesystem usage
+
+lsblk -> shows block devices
+
+To attach from local: ssh -i ~\.ssh\thinknyx-cognixia-jump-sarah.pem ubuntu@54.158.244.116
+
+sudo su - -> sets to root user 
+
+sudo hostnamectl set-hostname thinknyx-<name> && bash -> will reset hostname to thinksys-<name> on your screen
+
+Basic steps on the server
+    1. sudo su - -> sets to root user (like admin)
+    2. apt-get update -> updates all files on your server (can also use just apt and not apt-get on new Debian/Ubuntu servers)
+    3. apt-get install apache2 -y -> installs Apache2 on your server at port 80
+    4. curl localhost -> will show Apache's html index page
+    5. echo "<br>Hi from `hostname` at `date`.</br>" > /var/www/html/index.html -> replacing the index.html file with your code
+    6. curl localhost -> will show your new code
+	7. To add, use >>
+		echo "<br>&nbsp;&nbsp;This is day for JUMP Program</br>" >> /var/www/html/index.html
+	8. curl localhost -> will show your new code
+	
+To check web:  http://ec2-54-158-244-116.compute-1.amazonaws.com   
+
+COMMANDS TO INSTALL DOCKER
+ sudo apt-get update
+    8  sudo apt-get install ca-certificates curl
+    9  sudo install -m 0755 -d /etc/apt/keyrings
+   10  ll /etc/apt/keyrings/
+   11  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+   12  ll /etc/apt/keyrings/
+   13  sudo chmod a+r /etc/apt/keyrings/docker.asc
+   14  ls -ltr /etc/apt/sources.list.d/
+   15  echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   16  ls -ltr /etc/apt/sources.list.d/
+   17  sudo apt-get update
+   18  docker version
