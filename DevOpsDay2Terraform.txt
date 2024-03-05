@@ -1,0 +1,58 @@
+
+Hashicorp- Packer, Vault, Nomad, Terraform
+	Version Control
+	Measure Cost
+	Readability
+	Dependency Structure
+	Replication
+	Idempotency
+
+Terraform - will work with AWS or Azure
+	Code is platform independent
+	
+OpenTofu - is open source Terraform
+
+HCL - HashiCorp Configuration Languagee
+
+Code Syntax in Terraform Registry
+
+Tool = user without a face
+
+Link to download terraform https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_windows_amd64.zip
+
+Install terraform binary by adding to the environment variables
+
+
+Authentication and Configuration
+
+Configuration for the AWS Provider can be derived from several sources, which are applied in the following order:
+    1. Parameters in the provider configuration
+    2. Environment variables
+    3. Shared credentials files
+    4. Shared configuration files
+    5. Container credentials
+    6. Instance profile credentials and Region
+	
+Terraform is written in blocks
+Block types: provider/variables/output/resource
+
+backend
+idempotency
+
+See Terraform files for terraform example
+
+Commands: - terraform init
+		  - terraform validate
+		  - terraform plan
+		  - terraform apply
+		  
+To add the pem/pub key, you MUST DO it from the start or it will delete and recreate.
+
+terraform state list will show what resources are created
+If you want to see info from one resource, use terraform state show <instance-name>
+
+If you want just one attribute, use an output block in terraform, like:
+
+output "public_ip" {
+  value = aws_instance.my_ubuntu_server.public_ip #reference
+}
