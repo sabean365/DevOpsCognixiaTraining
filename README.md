@@ -1,27 +1,13 @@
-# DevOpsCognixiaTraining
+# DevOps Day 5 Training
+## with AWS
+- <img width="48" height="48" src="https://img.icons8.com/color/48/amazon-web-services.png" alt="amazon-web-services"/>
 
+## with Terraform
+- <img width="48" height="48" src="https://img.icons8.com/color/48/terraform.png" alt="terraform"/>
 
-## Day 1: Intro to Cloud - AWS -> Linux -> using troubleshooting in Linux
+## with Ansible 
+- <img width="48" height="48" src="https://img.icons8.com/color/48/ansible.png" alt="ansible"/>
 
-## Days 2,3 : DevOps -> Terraform
-
-## Days 4,5,6,7: CM -> Configuration Management (Ansible) -> OpenTofu, Salt Stack
-
-## Days 8,9 days: Containerization -> Docker - Scanning images
-
-## Days 10, 11, 12: K8S
-
-## Days 13,14: Git -> BitBucket
-
-## Days 15,16: CICD Automation (Jenkins) Jenkinsfile
-
-## Day 17: Monitoring/Dashboarding -> Prometheus/Grafana
-
-## Day 18,19,20: PingID (IAM)
-
-## Days 21,22, .5-23  : OpenShift (OKS)
-
-## Day 23,24: Capstone Project
-
-## Day 25: Presentations
+## installing Docker
+- <img width="48" height="48" src="https://img.icons8.com/fluency/48/docker.png" alt="docker"/>
 
