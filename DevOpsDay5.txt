@@ -1,0 +1,102 @@
+
+
+create a new folder named playbooks and create a resource that will copy everything inside playbook to the ubuntu
+
+Playbook name of play is kv
+	hosts is kv
+	tasks is a list - start with dash
+	
+After running playbook for dependency tasks:
+
+    1  cd /tmp/
+    5  cat install_docker.yml 
+    9  sudo cp ansible.cfg /etc/ansible/
+   10  rm -rf ansible.cfg 
+   11  ansible-playbook install_docker.yml --syntax-check 
+   13  chmod 600 ~/.ssh/id_rsa
+   14  ansible-playbook install_docker.yml --check
+   15  ansible-playbook install_docker.yml
+   
+If you have multiple dependencies, you can use the following syntax:
+
+  - name: Install dependencies
+    become: yes
+    package: 
+      name: "{{ item }}"  
+      state: present
+      update_cache: yes
+    with_items:
+    - ca-certificates
+    - curl
+
+To add a repo directory (Docker)
+  - name: Add Docker repository
+    become: yes
+    apt_repository:
+      state: present 
+      repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+      filename: /etc/apt/sources.list.d/docker.list
+      update_cache: yes
+	
+   23  echo $(dpkg --print-architecture)
+   24  ansible all -m setup | grep -i amd64
+   25  ansible all -m setup | grep -i architecture
+   26  ansible-playbook install_docker.yml
+   27  cat install_docker.yml
+   28  ansible-playbook install_docker.yml
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+  - name: Change Owner of file
+    become: yes
+    file:
+      path: /var/run/docker.sock
+      owner: "{{ ansible_user_id }}"
+	  
+ansible to check Docker version
+
+  - name: Command to check Docker version
+    shell: docker version #usees shell module
+    register: version
+  - name: Print Docker version
+    debug: var=version.stdout_lines #uses debug module
+
+ansible user management
+- name: User Management
+  hosts: all
+  become: yes
+  vars:
+    user: appuser
+    group: app
+  tasks:
+  - name: Printing msg
+    debug:
+      msg: "[INFO] Creating user {{ user }} and will add to this group: {{ group }}."
+  - name: Create Group
+    group:
+      name: "{{ group }}"
+      state: present
+    tags:
+    - user_management
+  - name: Create user
+    user:
+      name: "{{ user }}"
+      shell: /bin/bash
+      groups: "{{ group }}"
+      append: yes
+      state: present
+    tags:
+    - user_management
+
+ansible-playbook create_group.yml --extra-vars "user=tomcat" to add on the fly in the command line
+ansible-playbook create_group.yml --extra-vars "user=tomcat group=tomcat" to add user and group via command line
+
+Other commands for this play:
+    4  cat /etc/passwd | grep -i appuser
+    5  cat /etc/group | grep -i app
+    6  getent group app
+    7  groups appuser
+    8  ansible-playbook install_docker.yml --tags user_creation
+    9  groups tomcat
+   10  getent group tomcat

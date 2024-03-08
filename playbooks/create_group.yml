@@ -1,0 +1,26 @@
+
+- name: User Management
+  hosts: all
+  become: yes
+  vars:
+    user: appuser
+    group: app
+  tasks:
+  - name: Printing msg
+    debug:
+      msg: "[INFO] Creating user {{ user }} and will add to this group: {{ group }}."
+  - name: Create Group
+    group:
+      name: "{{ group }}"
+      state: present
+    tags:
+    - user_management
+  - name: Create user
+    user:
+      name: "{{ user }}"
+      shell: /bin/bash
+      groups: "{{ group }}"
+      append: yes
+      state: present
+    tags:
+    - user_management
