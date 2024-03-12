@@ -1,0 +1,71 @@
+- name: Install Tomcat
+  hosts: all
+  become: yes
+  vars:
+    CATALINA_HOME: "/opt/tomcat/apache-tomcat-10.1.19"
+    JAVA_HOME: "/usr/lib/jvm/java-{{ JAVA_VERSION }}-openjdk-amd64"
+    JAVA_VERSION: "17"
+    PATH: "/opt/tomcat"
+    URL: "https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.19/bin/apache-tomcat-{{ VERSION }}.tar.gz"
+    VERSION: "10.1.19"
+    WAR_URL: https://github-registry-files.githubusercontent.com/374030741/a1f45f00-c5ed-11eb-9a73-065975828548?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240311%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240311T191204Z&X-Amz-Expires=300&X-Amz-Signature=42336ed86bbb8c15eb9b3ea38f24a3f3d3c737654af66f2b8c6a86fb468c582b&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=374030741&response-content-disposition=filename%3Dindianstates-1.1.war&response-content-type=application%2Foctet-stream
+    USER: "tomcat"
+  tasks:
+  - name: Install JRE
+    package:
+      name: "openjdk-{{ JAVA_VERSION }}-jre"
+      state: present
+      update_cache: yes
+  - name: Download Tomcat Tar
+    get_url:
+      url: "{{ URL }}"
+      dest: /tmp
+  - name: Create tomcat folder
+    file:
+      path: "{{ PATH }}"
+      state: directory
+  - name: Untar Tomcat Tar file
+    unarchive:
+      src: "/tmp/apache-tomcat-{{ VERSION }}.tar.gz"
+      dest: "{{ PATH }}"
+  - name: Copy init script
+    template:
+      src: tomcat-init.j2
+      dest: /etc/init.d/tomcat
+      mode: "0755"
+    notify: 
+    - Start Tomcat Service
+  - name: Start Tomcat Service
+    service:
+      name: tomcat
+      state: started
+  - name: Copy tomcat users
+    template:
+      src: tomcat-users.xml.j2
+      dest: "{{ CATALINA_HOME }}/conf/tomcat-users.xml"
+  - name: Copy Manager Context 
+    copy:
+      src: manager-context.xml
+      dest: "{{ CATALINA_HOME }}/webapps/manager/META-INF/context.xml"
+  - name: Create tomcat user
+    user:
+      name: "{{ USER }}"
+  - name: Change ownership of tomcat directory
+    file:
+      path: /opt/tomcat10
+      owner: tomcat
+      group: tomcat
+      mode: "0600"
+      recurse: yes
+      state: directory
+  # - name: Download contents of WAR_URL
+  #   get_url:
+  #     src: "{{ WAR_URL }}"
+  #     dest: "/opt/tomcat/apache-tomcat-{{ VERSION }}/webapps/application.war"
+  #     mode: "0755"
+  handlers:
+  - name: Start Tomcat Service
+    service:
+      name: tomcat
+      state: started
+      daaemon-reload: true

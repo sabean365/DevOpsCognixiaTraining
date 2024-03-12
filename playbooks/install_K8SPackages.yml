@@ -1,0 +1,46 @@
+- name: Install K8S
+  hosts: all
+  become: yes
+  vars:
+    GPG_URL: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key"
+    K8S_VERSION: "v1.29"
+  tasks:
+  - name: Install K*s dependencies
+    package: 
+      name: "{{ item }}"  
+      state: present
+      update_cache: yes
+    with_items:
+    - apt-transport-https
+    - ca-certificates 
+    - curl
+    - gpg
+  - name: Get GPG keyrings for K8S
+    apt_key:
+      url: "{{ GPG_URL}}"
+      keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      state: present
+  - name: Add K8S Repo
+    apt_repository:
+      repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ K8S_VERSION }}/deb/ /
+      filename: kubernetes
+      state: present
+      update_cache: yes
+  - name: Install K8s
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items: 
+    - kubelet 
+    - kubeadm 
+    - kubectl
+  - name: Mark as Hold
+    dpkg_selections:
+      name: "{{ item }}"
+      selection: hold
+    loop:
+    - kubelet 
+    - kubeadm 
+    - kubectl
+
+
