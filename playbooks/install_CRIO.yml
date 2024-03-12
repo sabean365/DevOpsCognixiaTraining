@@ -1,0 +1,47 @@
+- name: Install CRIO
+  hosts: all
+  become: yes
+  vars: 
+    GPG_K8S_URL: "https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/deb/Release.key"
+    KUBERNETES_VERSION: "v1.29"
+    PROJECT_PATH: prerelease:/main
+  tasks: 
+  - name: Install dependencies
+    package: 
+      name: "{{ item }}"  
+      state: present
+      update_cache: yes
+    with_items:
+      - software-properties-common 
+      - curl 
+  - name: Add Key & Repo for Kubernetes
+    include_role:
+      name: install_packages
+    vars:
+      KEY_URL: "{{ GPG_K8S_URL }}"
+      KEY_NAME: kubernetes-apt-keyring
+      REPO: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/deb/ /
+      REPO_FILENAME: kubernetes
+  - name: Add Key & Repo for cri-o
+    include_role:
+      name: install_packages
+    vars:
+      KEY_URL: https://pkgs.k8s.io/addons:/cri-o:/{{ PROJECT_PATH }}/deb/Release.key
+      KEY_NAME: cri-o-apt-keyring
+      REPO: deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/{{ PROJECT_PATH }}/deb/ /
+      REPO_FILENAME: cri-o
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    with_items:
+      - cri-o
+      - kubelet
+      - kubeadm
+      - kubectl
+  - name: start cri-o service
+    service:
+      name: crio
+      state: started
+      enabled: yes

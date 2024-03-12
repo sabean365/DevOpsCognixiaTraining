@@ -24,6 +24,17 @@ resource "aws_default_security_group" "ec2" {
       prefix_list_ids  = []
       self             = false
       security_groups  = []
+    },
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      from_port        = 8080
+      to_port          = 8080
+      protocol         = "TCP"
+      description      = "Tomcat"
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      self             = false
+      security_groups  = []
     }
   ]
   tags = local.tags
@@ -47,6 +58,7 @@ resource "null_resource" "install_ansible" {
   triggers = {
     instance_id = aws_instance.my_ubuntu_server.id
   }
+  depends_on = [null_resource.copy_ansible_cfg, null_resource.copy_private_key]
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
@@ -60,21 +72,23 @@ resource "null_resource" "install_ansible" {
       "sudo hostnamectl set-hostname ${var.name}",
       "ansible --version",
       "sudo mkdir -p /etc/ansible",
-      "sudo echo ${aws_instance.my_ubuntu_server.private_ip} > /tmp/hosts",
-      "sudo cp /tmp/hosts /etc/ansible/hosts"
+      "echo ${aws_instance.my_ubuntu_server.private_ip} > /tmp/hosts",
+      "sudo cp /tmp/hosts /etc/ansible/hosts",
+      "sudo cp /tmp/ansible.cfg /etc/ansible/ansible.cfg",
+      "chmod 600 ~/.ssh/id_rsa"
     ]
   }
 }
 resource "null_resource" "copy_ansible_cfg" {
   provisioner "file" {
     connection {
-      type        = "ssh"
-      host        = aws_instance.my_ubuntu_server.public_ip
-      user        = "ubuntu"
+      type = "ssh"
+      host = aws_instance.my_ubuntu_server.public_ip
+      user = "ubuntu"
       #private_key = file("C:/Users/kul/Downloads/${var.name}.pem")
       private_key = tls_private_key.keypair.private_key_pem
     }
-    source = "ansible.cfg"
+    source      = "ansible.cfg"
     destination = "/home/ubuntu/ansible.cfg"
   }
 }
@@ -84,10 +98,24 @@ resource "null_resource" "copy_private_key" {
       type        = "ssh"
       host        = aws_instance.my_ubuntu_server.public_ip
       user        = "ubuntu"
-      #private_key = file("C:/Users/kul/Downloads/${var.name}.pem")
       private_key = tls_private_key.keypair.private_key_pem
     }
-    source = "C:/Users/Sarah B/.ssh/${var.name}.pem"
+    source      = "C:/Users/Sarah B/.ssh/${var.name}.pem"
     destination = "/home/ubuntu/.ssh/id_rsa"
+  }
+}
+resource "null_resource" "copy_playbooks" {
+  triggers = {
+    timestamp = timestamp()
+  }
+  provisioner "file" {
+    connection {
+      type        = "ssh"
+      host        = aws_instance.my_ubuntu_server.public_ip
+      user        = "ubuntu"
+      private_key = tls_private_key.keypair.private_key_pem
+    }
+    source      = "./playbooks/"
+    destination = "/tmp/"
   }
 }
