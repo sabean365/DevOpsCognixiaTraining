@@ -1,12 +1,9 @@
 
 - name: Install Docker
   hosts: all
-  become: yes
-  vars: 
-    PATH: "/etc/apt/keyrings"
-    GPG_URL: "https://download.docker.com/linux/ubuntu/gpg"
   tasks: 
   - name: Install dependencies
+    become: yes
     package: 
       name: "{{ item }}"  
       state: present
@@ -14,27 +11,31 @@
     with_items:
     - ca-certificates
     - curl 
-  - name: Create keyrings directory    
+  - name: Create keyrings directory
+    become: yes
     file:
-      path: "{{ PATH }}"
+      path: /etc/apt/keyrings
       mode: "755"
       state: directory
   - name: Get GPG keyrings
+    become: yes
     get_url:
-      url: "{{ GPG_URL }}"
-      dest: "{{ PATH }}/docker.asc"
+      url: https://download.docker.com/linux/ubuntu/gpg
+      dest: /etc/apt/keyrings/docker.asc
       mode: "644"
   - name: Get Arch - Setup Fact
     set_fact: 
       ARCH: amd64
       when: ansible_architecture == "x86_64"
   - name: Add Docker Repo
+    become: yes
     apt_repository:
       repo: "deb [arch={{ ARCH }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
       filename: /etc/apt/sources.list.d/docker
       state: present
       update_cache: yes
   - name: Install Docker
+    become: yes
     package:
       name: "{{ item }}"  
       state: present
@@ -46,6 +47,7 @@
       - docker-buildx-plugin 
       - docker-compose-plugin
   - name: Change Owner of file
+    become: yes
     file:
       path: /var/run/docker.sock
       owner: "{{ ansible_user_id }}"
