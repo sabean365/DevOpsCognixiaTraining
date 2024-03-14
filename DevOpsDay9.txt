@@ -1,0 +1,163 @@
+DOCKER IMAGES/CONTAINERS
+
+When you deploy an application, you must layer:
+1.	Decide the operating system == base images
+	dotnet framework -> windows
+	dotnet core -> docker
+  
+2. 	Add prerequisites
+	modules needed for application language
+	application and libraries
+
+3.	Configurations 
+
+CHALLENGE:
+Create container using ubuntu:24.04 in interactive and dettached mode and then connect with the same
+
+COMMANDS:
+sudo chown ubuntu /var/run/docker.sock
+docker container run -id --name ubuntu24 ubuntu:24.04
+docker container exec -i -t ubuntu23 /bin/bash
+
+CHALLENGE:
+Install JRE & WGET once done exit from container
+
+COMMANDS:
+export DEBIAN_FRONTEND=noninteractive
+apt-get update && apt-get install wget
+apt-get install openjdk-17-jre
+
+SEE CHANGES:
+docker container diff c1
+
+TO COMMIT IMAGE:
+docker container commit -a "Sarah" -m "JRE & WGET" tomcat:1
+
+SEE IMAGE:
+docker image ls
+docker image history tomcat:1
+
+
+CHALLENGE:
+Create a user with the name tomcat with home directory as /opt/app 
+once done exit from container
+commit the change inn the container with the  name tomcat:2
+
+COMMANDS:
+useradd -m -d /opt/app tomcat
+docker container commit -a "Sarah" -m "Add user" tomcat:2
+
+Create and connect with new container using tomcat:2 with user as tomcat & default directory as /opt/app
+
+COMMAND: 
+docker container run -id --name c1 -u tomcat -w /opt/apt tomcat:2
+docker container exec -it c1 /bin/bash
+
+CHALLENGE:
+download tomcat tar file
+untar the tar filerename extracted folder as tomcat
+delete the tar file
+	
+wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.19/bin/apache-tomcat-10.1.19.tar.gz
+tar -xvf apache-tomcat-10.1.19.tar.gz
+mv apache-tomcat-10.1.19 tomcat
+rm apache-tomcat-10.1.19.tar.gz
+CHALLENGE:
+commit new image
+delete container
+show changes
+
+docker container commit -a "Sarah" -m "Add tomcat" c1 tomcat:3
+
+docker image history tomcat:3
+IMAGE          CREATED          CREATED BY                                      SIZE      COMMENT
+19ab62dfb4ea   58 seconds ago   /bin/bash                                       29.7MB    Add tomcat
+cf8a0e2a9072   33 minutes ago   /bin/bash                                       11.1kB    Add user
+96382eb3389f   53 minutes ago   /bin/bash                                       662MB     JRE & WGET
+ca87e6c45a8a   2 weeks ago      /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      2 weeks ago      /bin/sh -c #(nop) ADD file:93f7775e4e5ce50f9…   78MB
+<missing>      2 weeks ago      /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+<missing>      2 weeks ago      /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+<missing>      2 weeks ago      /bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH     0B
+<missing>      2 weeks ago      /bin/sh -c #(nop)  ARG RELEASE                  0B
+
+ASSIGNMENT:  copy config files to container as xml
+
+COMMANDS:
+docker container cp tomcat-users.xml c1:/opt/app/tomcat/conf/tomcat-users.xml
+docker container cp manager-context.xml c1:/opt/app/tomcat/webapps/manager/META-INF/context.xml
+docker container diff c1
+
+CREATE NEW IMAGE:
+docker container commit -a "Kul" -m "Add user config files" c1 tomcat:4
+docker image history tomcat:4
+docker container kill `docker container ls -q` && docker container prune -f  
+or 
+docker kill c1 && docker rm c1
+
+Dockerfile:
+FROM ubuntu:24.04
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y wget openjdk-17-jre
+RUN adduser tomcat --home /opt/app
+USER tomcat
+WORKDIR /opt/app
+RUN wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.19/bin/apache-tomcat-10.1.19.tar.gz && tar -xvf apache-tomcat-10.1.19.tar.gz && mv apache-tomcat-10.1.19 tomcat && rm apache-tomcat-10.1.19.tar.gz
+COPY tomcat-users.xml tomcat/conf/tomcat-users.xml
+COPY manager-context.xml tomcat/webapps/manager/META-INF/context.xml
+EXPOSE 8080
+CMD ["sh", "tomcat/bin/catalina.sh", "run"]
+
+Generalized Dockerfile (adding ARG lines):
+FROM ubuntu:24:04
+ARG DEBIAN_FRONTEND=noninteractive
+ARG ARCHIVE_URL=https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.19/bin/apache-tomcat-10.1.19.tar.gz
+ARG TOMCAT_VERSION=10.1.19
+ARG USER=tomcat
+ARG WORKDIR=/opt/app
+RUN apt-get update && apt-get install -y wget opjdk-17-jre
+RUN adduser ${USER} -m -d ${WORKDIR}
+USER ${USER}
+WORKDIR ${WORKDIR}
+RUN wget ${ARCHIVE_URL} && tar -xvf apache-tomcat-${TOMCAT_VERSION}.tar.gz && mv apache-tomcat-${TOMCAT_VERSION} tomcat && rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
+COPY tomcat-users.xml tomcat/conf/tomcat-users.xml && cp manager-context.xml tomcat/webapps/manager/META-INF/context.xml
+EXPOSE 8080
+CMD ["sh", "tomcat/bin/catalina.sh", "run"]
+
+ASSIGNMENT:  delete all images
+docker image rm  `docker image ls -q`
+
+Write a Dockerfile for am image containing postgresql-client
+
+FROM ubuntu 24:04
+ARG DEBIAN_FRONTEND=noninteractive
+ENV PGUSER postgres
+ENV PGPORT 5432
+ENV PGDATABASE postgres
+RUN apt-get update -qq && apt-get install -y postgresql-client
+CMD ["sh", "docker/checkenv.sh", "run"]
+
+#!/bin/bash
+if [ -z "$PGHOST" ]; then
+  echo "[ERROR] PGHOST Env Variable can't be empty." && exit 1
+fi
+if [ -z "$PGPASSWORD" ]; then
+  echo "[ERROR] PGPASSWORD Env Variable can't be empty." && exit 1
+else
+    echo "[INFO] Connection details for postgres server"
+    echo "** HOST: $PGHOST **"
+    echo "** PORT: $PGPORT **"
+    echo "** USER: $PGUSER **"
+    echo "** DATABASE: $PGDATABASE **"
+fi
+
+COMMANDS:
+docker image build -f Dockerfile -t psql:latest .
+docker container run -e PGHOST=172.17.0.2 -e PGPASSWORD=12345679 psql:latest
+
+TO PUSH TO DOCKER REPO:
+docker login
+docker image tag tomcat:10.1.19 <username>/tomcat:10.1.19
+docker image push <username>/tomcat:10.1.19
+docker image tag psql:latest <username>/psql:latest
+docker image push <username>/psql:latest
