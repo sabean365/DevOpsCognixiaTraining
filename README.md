@@ -8,14 +8,11 @@
 ## with Ansible 
 - <img width="48" height="48" src="https://img.icons8.com/color/48/ansible.png" alt="ansible"/>
 
-## Install Tomcat via Ansible Playbook
-- <img width="48" height="48" src="https://img.icons8.com/color/48/tomcat.png" alt="tomcat"/>
+## install Docker in container
+- <img width="48" height="48" src="https://img.icons8.com/fluency/48/docker.png" alt="docker"/>
 
-## Install Trivy via Ansible Playbook
-- ![](https://github.com/sabean365/picturesOfMeOrNot/blob/main/GitHub/trivy-logo.png)
+## install Java in container
+- <img width="48" height="48" src="https://img.icons8.com/color/48/java-coffee-cup-logo--v1.png" alt="java-coffee-cup-logo--v1"/>
 
-## Install Kubernetes via Ansible Playbook
-- <img width="48" height="48" src="https://img.icons8.com/color/48/kubernetes.png" alt="kubernetes"/>
-
-## Install CRI-O via Ansible Playbook
-- ![](https://github.com/sabean365/picturesOfMeOrNot/blob/main/GitHub/crio-logo.png)
+## install Postgres in container
+- <img width="48" height="48" src="https://img.icons8.com/color/48/postgreesql.png" alt="postgreesql"/>
