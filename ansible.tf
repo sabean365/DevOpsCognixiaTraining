@@ -35,6 +35,17 @@ resource "aws_default_security_group" "ec2" {
       prefix_list_ids  = []
       self             = false
       security_groups  = []
+    },
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      from_port        = 90
+      to_port          = 90
+      protocol         = "TCP"
+      description      = "docker-proxy"
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      self             = false
+      security_groups  = []
     }
   ]
   tags = local.tags
@@ -42,9 +53,9 @@ resource "aws_default_security_group" "ec2" {
 
 resource "aws_instance" "my_ubuntu_server" {
   ami           = "ami-07d9b9ddc6cd8dd30"
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
   #do not use security_group_ids will destroy and recreate EC2
-
+  # vpc_security_group_ids = [ aws_default_security_group.ec2.ids ]
   tags     = local.tags
   key_name = aws_key_pair.key.key_name
   root_block_device {
@@ -89,7 +100,7 @@ resource "null_resource" "copy_ansible_cfg" {
       private_key = tls_private_key.keypair.private_key_pem
     }
     source      = "ansible.cfg"
-    destination = "/home/ubuntu/ansible.cfg"
+    destination = "/tmp/ansible.cfg"
   }
 }
 resource "null_resource" "copy_private_key" {

@@ -1,0 +1,244 @@
+
+DOCKER - containers
+
+CONTAINER JOURNEY
+Container is an isolated process which has an additional or extra layer that allows this process to not be interrupted by other processes running on some sort of machine.
+- Resoures: storage, cpu, memory
+
+Linux namespace: namespaces are a feature of the Linux kernel that partition kernel resources such that one set of processes sees one set of resources, while another set of processes sees a different set of resources. The feature works by having the same namespace for a set of resources and processes, but those namespaces refer to distinct resources.
+
+cgroups is a Linux kernel feature that limits, accounts for, and isolates the resource usage (CPU, memory, disk I/O, etc.[1]) of a collection of processes.
+
+namespaces + cgroups == lxc - linux containers 1.0 == yum community
+
+lxd 1.0 = Debian based containers
+
+lxc and lxd are platform dependent
+
+DotCloud Inc - developed both 
+
+DotCloud -> Open source software (OSS0 -> Docker 2012 -> Docker community -> threat to Docker == capitalism
+
+OCI formed in 2015 (Open Container Initiative) -> core features to create a container and talk to kernel are OSS -> functions: runc and containerd -> must be compatible and OSS -> Docker cannot change or charge
+
+EDITIONS OF CONTAINERIZATION
+- docker-ce community edition 
+- docker-ee enterprise edition
+- podman backed by RedHat community
+- rkt
+- frakit
+- containerd
+
+CONTAINER HOST
+-> installed DOCKER
+
+CONTAINERIZATION: 
+-> container: running component on top of image - has additional layer of filesystem
+-> image -> read-only
+-> network == internet and IP
+-> transfer of data packets -> volume (persistence)
+
+STEPS TO ADD A CONTAINER:
+-> search image local
+-> download docker image
+-> create the container
+-> add filesystem
+-> add network layer
+-> assign PRIVATE IP from default docker network 
+-> start/run container
+
+COMMANDS TO RUN IMAGES/CONTAINERS ON SERVER
+command to allow below commands without sudo:
+sudo chown ubuntu /var/run/docker.sock
+
+    6  docker version
+    7  docker container ls
+    8  docker container ls -a
+    9  cat /etc/os-release
+   10  docker image ls
+   11  docker container run -i -d centos:latest
+   12  docker container ls
+   13  docker image ls
+   14  cat /etc/os-release
+   15  docker container exec <container-name> cat /etc/os-release
+   16  docker container run -i -d redhat/ubi9
+   17  docker container ls
+   18  docker container exec <container-name> cat /etc/os-release
+   19  docker container run -i -d ubuntu:24.04
+   20  docker container exec <container-name> cat /etc/os-release
+   21  cat /etc/os-release
+   
+to delete
+-> must stop/kill
+docker container kill or stop
+
+-> to delete
+docker container rm or docker container prune
+
+size difference
+ubuntu        24.04     ca87e6c45a8a   2 weeks ago   78MB
+redhat/ubi9   latest    4d6addf62a90   7 weeks ago   211MB
+centos        latest    5d0da3dc9764   2 years ago   231MB
+
+   23  docker container ls
+   24  docker container stop cranky_bardeen
+   25  docker container ls
+   26  docker container ls -a
+   27  docker container rm cranky_bardeen
+   28  docker container kill goofy_mahavira flamboyant_meninsky
+   29  docker container ls -a
+   30  docker container prune
+   31  docker container ls -a
+   32  docker image ls
+   
+ADD FLAGS:
+docker container run -id --name ubuntu24 ubuntu:24.04
+
+TO get into container (for testing or failed containers):
+docker container exec -i -t ubuntu24 /bin/bash #interactive and terminal
+
+hostname -i wil show IP
+
+to install a package on container
+apt-get update
+apt install iputils-ping
+
+when you write something on top of a container, you have made changes to the filesystem
+docker system df 
+-> will show difference in container from what was originally there
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          3         1         520.2MB   442.2MB (85%)
+Containers      1         1         37.33MB   0B (0%)
+Local Volumes   0         0         0B        0B
+Build Cache     0         0         0B        0B
+
+
+38  docker system df
+   39  docker container exec ubuntu24 apt-get install net-tools
+   40  docker system df
+   41  docker container exec ubuntu24 apt-get install -y openjdk-17-jre
+   42  docker system df
+   43  git --version
+   44  docker container exec ubuntu24 apt-get install -y git
+   45  git --version
+   46  docker container exec ubuntu24 git --version
+   
+with Java:
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          3         1         520.2MB   442.2MB (85%)
+Containers      1         1         735.6MB   0B (0%)
+Local Volumes   0         0         0B        0B
+Build Cache     0         0         0B        0B
+
+docker system df 
+-> will show if there are any containers
+
+docker container kill `docker container ls -q`
+-> if you don't know the name, it will output
+
+create container in dettached mode using kulbhushanmayer/httpd:1.1 and name is httpd-1.1
+answer:
+docker container run -d --name httpd-1.1 kulbhushanmayer/httpd:1.1
+
+ps -ef | grep -i httpd
+-> command to show proccesses of httpd
+
+root       22075   22055  0 16:00 ?        00:00:00 httpd -D FOREGROUND
+48         22101   22075  0 16:00 ?        00:00:00 httpd -D FOREGROUND
+48         22102   22075  0 16:00 ?        00:00:00 httpd -D FOREGROUND
+48         22103   22075  0 16:00 ?        00:00:00 httpd -D FOREGROUND
+48         22111   22075  0 16:00 ?        00:00:00 httpd -D FOREGROUND
+ubuntu     22341    1967  0 16:03 pts/0    00:00:00 grep --color=auto -i httpd
+
+
+docker container exec ubuntu23 hostname -i
+or
+docker network inspect bridge
+-> will show IP
+
+Can curl:
+curl 172.17.0.2:80
+
+docker container top httpd-1.1
+-> to show processes running in the container
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                22075               22055               0                   16:00               ?                   00:00:00            httpd -D FOREGROUND
+48                  22101               22075               0                   16:00               ?                   00:00:00            httpd -D FOREGROUND
+48                  22102               22075               0                   16:00               ?                   00:00:00            httpd -D FOREGROUND
+48                  22103               22075               0                   16:00               ?                   00:00:00            httpd -D FOREGROUND
+48                  22111               22075               0                   16:00               ?                   00:00:00            httpd -D FOREGROUND
+
+!<number> 
+-> can call command from history
+
+curl localhost is on local machine
+
+need to use proxy
+-> docker proxy
+
+docker container run -d --name httpd-1.2 -p 127.0.0.1:80:80 kulbhushanmayer/httpd:1.2  #use -p for proxy 127.0.0.1 == localhost
+
+ps -ef | grep -i docker-proxy
+output:
+root       23147    5185  0 16:26 ?        00:00:00 /usr/bin/docker-proxy -proto tcp -host-ip 127.0.0.1 -host-port 80 -container-ip 172.17.0.2 -container-port 80
+ubuntu     23282    1967  0 16:26 pts/0    00:00:00 grep --color=auto -i docker-proxy
+
+Challenge: Create a new container using kulbhushanmayer/httpd:1.2 with name httpd-public and expose it for your system public-ip on port 90 and access it from browser using http://<host-public-ip>:90/
+
+Add port 90 ingress in security group
+COMMAND:
+MAY NEED: sudo chown ubuntu /var/run/docker.sock
+
+docker container run -d --name httpd-public -p 90:80 kulbhushanmayer/httpd:1.2
+ps -ef | grep -i docker-proxy
+curl localhost:90
+curl 172.17.0.3
+
+ps -ef | grep -i docker-proxy 
+Output ->
+root       23998    5185  0 16:44 ?        00:00:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 90 -container-ip 172.17.0.2 -container-port 80
+root       24014    5185  0 16:44 ?        00:00:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 90 -container-ip 172.17.0.2 -container-port 80
+ubuntu     24179    1967  0 16:50 pts/0    00:00:00 grep --color=auto -i docker-proxy
+
+DANGEROUS COMMAND:
+docker container kill `docker container ls -q` && docker container prune -f
+
+CHALLENGE:
+create a container using postgres:13.4 with the name postgres and open port 5432 of container with port 2345 of host for localhost only
+
+COMMAND:
+docker container run -d --name postgres -p 2345:5432 -e POSTGRES_PASSWORD=India123 postgres:13.4 #must have password before image name
+BECAUSE:
+After container image, you can only put process you want to start.
+
+CHALLENGE:
+create a container using ubuntu:23.04 in interactive & dettached mode 
+connect with the container using exec
+install postgres client inside container using postgresql-client
+
+COMMAND:
+docker container run -id --name ubuntu24 ubuntu:24.04
+docker container exec -i -t ubuntu23 /bin/bash
+apt-get update -qq && apt-get install -y postgresql-client
+
+ADD ENV VARS
+export PGHOST=172.17.0.2
+export PGUSER=postgres
+export PGPORT=5432
+export PGDATABASE=postgres
+export PGPASSWORD=postgres
+
+CREATE USER 'postgres'@'localhost' IDENTIFIED BY 'postgres';
+
+CREATE TABLE users(
+id INT AUTO_INCREMENT,
+   first_name VARCHAR(100),
+   last_name VARCHAR(100),
+   email VARCHAR(50),
+   password VARCHAR(20),
+   location VARCHAR(100),
+   dept VARCHAR(100),
+   is_admin TINYINT(1),
+   register_date DATETIME,
+   PRIMARY KEY(id)
+);

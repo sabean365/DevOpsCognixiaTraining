@@ -13,7 +13,8 @@
       update_cache: yes
     with_items:
     - ca-certificates
-    - curl 
+    - curl
+    - net-tools
   - name: Create keyrings directory    
     file:
       path: "{{ PATH }}"
