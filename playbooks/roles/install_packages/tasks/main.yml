@@ -1,0 +1,11 @@
+  - name: Download the GPG key
+    apt_key:
+      url: "{{ KEY_URL }}"
+      state: present
+      keyring: "/etc/apt/keyrings/{{ KEY_NAME }}.gpg"
+  - name: Add APT repository for Kubernetes Packages
+    apt_repository:
+      repo: "{{ REPO }}"
+      state: present
+      filename: "{{ REPO_FILENAME }}"
+      update_cache: yes
