@@ -1,4 +1,4 @@
-# DevOps Day 10-11 Training
+# DevOps Day 11-12 Training
 ## with AWS
 - <img width="48" height="48" src="https://img.icons8.com/color/48/amazon-web-services.png" alt="amazon-web-services"/>
 
