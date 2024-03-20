@@ -5,7 +5,7 @@ Control plane -> minimum of 2 CPU, 2GB
 Others -> small: 1 CPU, 2 GB
 
 COMMAND:
-to connect to the control plan from a node: sudo kubeadm join 172.31.49.234:6443 --tokenr --discovery-token-ca-cert-hash sha256
+to connect to the control-plane from a node: sudo kubeadm join <IP>:<PORT> --token --discovery-token-ca-cert-hash sha256
 
 IF ERRORS:
 kubeadm resest -f
