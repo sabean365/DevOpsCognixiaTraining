@@ -5,7 +5,7 @@
 
 ## Days 2,3 : DevOps -> Terraform
 
-## Days 4,5,6,7: CM -> Configuration Management (Ansible) -> OpenTofu, Salt Stack
+## Days 4,5,6,7: CM -> Configuration Management (Ansible)
 
 ## Days 8,9 days: Containerization -> Docker - Scanning images
 
