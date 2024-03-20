@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-1
+  labels:
+    name: httpd
+spec:
+  containers:
+  - name: httpd
+    image: kulbhushanmayer/httpd:1.2
+    resources:
+      limits:
+        memory: "150Mi"
+        cpu: "150m"
+    ports:
+      - containerPort: 80
+
+   
+          

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-1
+  labels:
+    name: httpd
+spec:
+  containers:
+  - name: httpd
+    image: kulbhushanmayer/httpd:1.2
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+    ports:
+      - containerPort: 80
+  - name: nodejs
+    image: kulbhushanmayer/nodewebapp:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+    ports:
+      - containerPort: 8080
+
+   
+          

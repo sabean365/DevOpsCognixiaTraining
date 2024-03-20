@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: psql-setup
+  labels:
+    name: psql-setup
+spec:
+  containers:
+  - name: psql
+    image: kulbhushanmayer/psql:db_setup
+    command:
+    - sh
+    - -c
+    - sh database_setup.sh && sleep 7200
+    resources:
+      limits:
+        memory: "50Mi"
+        cpu: "50m"

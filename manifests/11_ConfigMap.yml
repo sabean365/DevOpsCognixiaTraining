@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-properties
+data:
+  PGPORT: "2345"
+  PGHOST: postgres.sarah.svc.thinknyx.org
+  PGUSER: postgres
+  PGDATABASE: postgres

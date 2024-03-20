@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: db-setup
+spec:
+  schedule: "*/1 * * * *" # Schedule for Every Min
+  jobTemplate:
+    spec:
+      template: #POD Definition, CronJob will create POD based on below details
+        spec:
+          containers:
+          - name: db-setup
+            image: kulbhushanmayer/psql:db_setup
+            env:
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: db-properties
+                  key: PGDATABASE
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-properties
+                  key: PGHOST
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: db-properties
+                  key: PGUSER
+            - name: PGPORT
+              valueFrom:
+                configMapKeyRef:
+                  name: db-properties
+                  key: PGPORT
+            envFrom:
+            - secretRef:
+                name: dbpwd
+          restartPolicy: OnFailure

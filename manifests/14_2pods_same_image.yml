@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment # Create predefined number of PODs using Replicas Field for stateful application
+metadata:
+  name: nodejs-apps
+spec:
+  replicas: 2
+  selector: # Helps replicaSet to monitor the pods once created 
+    matchLabels: # Match the labels on the PODs, should be same or subset of labels added in the POD template
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: nodejs-app-1
+        image: kulbhushanmayer/nodejs-app:v1
+        env:
+        - name: DB_PWD
+          valueFrom:
+            secretKeyRef:
+              name: dbpwd
+              key: PGPASSWORD  
+        envFrom:
+          name: nodejs-db-properties
+        ports:
+        - containerPort: 4000
+      - name: nodejs-app-2
+        image: kulbhushanmayer/nodejs-app:2.1
+        env:
+        - name: DB_PWD
+          valueFrom:
+            secretKeyRef:
+              name: dbpwd
+              key: PGPASSWORD
+        envFrom:
+          name: nodejs-db-properties
+        ports:
+        - containerPort: 3000

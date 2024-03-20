@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   vars:
-    hostname: "thinknyx-control-plane"
+    hostname: "thinknyx-app-node-sarah"
   tasks:
   - name: Setup Hostname
     hostname: 

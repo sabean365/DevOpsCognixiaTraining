@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nodejs-db-properties
+data:
+  DB_NAME: postgres
+  DB_URL: postgres.sarah.svc.thinknyx.org
+  DB_USER: postgres
+  DB_DATABASE: postgres
+  DB_HOST: postgres.sarah.svc.thinknyx.org
+  DB_PORT: "5432"
+---
+apiVersion: apps/v1
+kind: Deployment # Create predefined number of PODs using Replicas Field for stateful application
+metadata:
+  name: nodejs-apps
+spec:
+  replicas: 2
+  selector: # Helps replicaSet to monitor the pods once created 
+    matchLabels: # Match the labels on the PODs, should be same or subset of labels added in the POD template
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      initContainers:
+      - name: cwc-data
+        image: kulbhushanmayer/psql:14.9
+        command:
+        - sh
+        - -c
+        - sh script.sh && sleep 10
+        envFrom:
+        - configMapRef:
+            name: db-properties
+        - secretRef: 
+            name: dbpwd
+      - name: employee-data
+        image: kulbhushanmayer/psql:db_setup
+        command:
+        - sh
+        - -c
+        - sh database_setup.sh && sleep 10
+        envFrom:
+        - configMapRef:
+            name: nodejs-db-properties
+        - secretRef: 
+            name: dbpwd
+      containers:
+      - name: nodejs-app-1
+        image: kulbhushanmayer/nodejs-app:v1
+        env:
+        - name: DB_PWD
+          valueFrom:
+            secretKeyRef:
+              name: dbpwd
+              key: PGPASSWORD 
+        envFrom:
+        - configMapRef:
+            name: nodejs-db-properties  
+        ports:
+        - containerPort: 4000
+      - name: nodejs-app-2
+        image: kulbhushanmayer/nodejs-app:2.1
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dbpwd
+              key: PGPASSWORD 
+        envFrom:
+        - configMapRef:
+            name: nodejs-db-properties
+        ports:
+        - containerPort: 3000

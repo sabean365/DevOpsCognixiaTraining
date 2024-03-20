@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres
+  labels:
+    name: postgres
+spec:
+  containers:
+  - name: postgres
+    image: postgres:13.4
+    resources:
+      limits:
+        memory: "100Mi"
+        cpu: "100m"
+    ports:
+      - containerPort: 5432
+    env:
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: PGPASSWORD
+          name: dbpwd

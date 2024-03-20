@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-apps
+spec:
+  selector:
+    app: nodejs
+  ports:
+  - port: 90
+    targetPort: 4000
+    nodePort: 32078 # between 30000 - 32767 # No Services can't have same NodePort in cluster
+    name: nodejs-app-1
+  - port: 91
+    targetPort: 3000
+    nodePort: 32178 # between 30000 - 32767 # No Services can't have same NodePort in cluster
+    name: nodejs-app-2
+  type: NodePort # External Traffic
+  externalIPs: # Public IPs of Nodes or IP or Domain Name for External LoadBalancer
+  - 54.237.34.12
+  clusterIP: 20.20.03.11 # Internal Service IP, two services can't have same ClusterIP
