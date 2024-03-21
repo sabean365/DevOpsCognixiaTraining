@@ -10,12 +10,3 @@
 
 ## with Kubernetes
 - <img width="48" height="48" src="https://img.icons8.com/color/48/kubernetes.png" alt="kubernetes"/>
-
-## Install Tomcat via Ansible Playbook
-- <img width="48" height="48" src="https://img.icons8.com/color/48/tomcat.png" alt="tomcat"/>
-
-## Install Trivy via Ansible Playbook
-- ![](https://github.com/sabean365/picturesOfMeOrNot/blob/main/GitHub/trivy-logo.png)
-
-## Install CRI-O via Ansible Playbook
-- ![](https://github.com/sabean365/picturesOfMeOrNot/blob/main/GitHub/crio-logo.png)
