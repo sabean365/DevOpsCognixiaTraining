@@ -152,6 +152,6 @@ resource "null_resource" "copy_manifest" {
       private_key = tls_private_key.keypair.private_key_pem
     }
     source = "./manifests/"
-    destination = "/tmp/manifests"
+    destination = "/tmp/manifests/"
   }
 }

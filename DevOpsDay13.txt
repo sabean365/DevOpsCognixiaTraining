@@ -1,0 +1,158 @@
+
+
+VOLUMES:
+
+HostPath:
+
+CHALLENGE:
+pod:
+ubuntu:24.04
+command: 
+Enter Hostname, Date & NodeName in file /tmp/out.txt tail -f /tmp/out.txt
+
+MANIFEST:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volumes-demo
+  labels:
+    name: demo
+spec:
+  containers:
+  - name: c1
+    image: ubuntu:24.04
+    command:
+    - sh
+    - -c
+    - echo [INFO] Hello from Pod `hostname` at `date` running on $NODENAME. >> /tmp/out.txt && tail -f /tmp/out.txt
+    env:
+    - name: NODENAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    resources:
+      limits:
+        memory: "150Mi"
+        cpu: "150m"
+
+COMMANDS TO RUN:
+kubectl get pods
+kubectl logs volumes-demo
+kubectl describe pod volumes-demo
+kubectl get pods
+kubectl logs volumes-demo
+kubectl get pods
+kubectl logs volumes-demo
+
+
+How to see what is running on a node: sudo crictl ps
+
+FOR PERSISTENCE ADD:
+metadata:
+  name: volumes-demo-emptydir
+
+spec:
+  volumes:
+  - name: v1
+    emptyDir: {} # This volume persist the data till the life of POD
+	
+and at end:
+    volumeMounts:
+    - name: v1
+      mountPath: /tmp
+	  
+	  
+COMMANDS TO RUN:
+kubectl get pods -o wide
+kubectl describe pod volumes-demo-emptydir | grep -i "container ID"
+kubectl logs volumes-demo-emptydir
+kubectl get pods -o wide
+kubectl logs volumes-demo-emptydir
+kubectl describe pod volumes-demo-emptydir | grep -i "container ID"
+kubectl logs volumes-demo-emptydir
+kubectl get pods -o wide
+kubectl logs volumes-demo-emptydir
+
+THIS POD HAS:
+1. Container def -> path -> /tmp -> will start writing on volume |
+2. Volumes def                                                 <-|
+
+
+To create a secret on the machine;
+-> kubectl create secret generic kubeconfig --from-file ~/.kube/config
+
+COMMANDS TO RUN:
+kubectl get secrets
+kubectl describe secrets kubeconfig
+
+See 21_secret_as_volume.yml
+
+RUN THE YML:
+kubectl apply -f 18_Secret_As_Volume.yml
+
+COMMANDS TO RUN TO CHECK:
+kubectl get pods
+kubectl describe pod secret-as-volume
+kubectl exec secret-as-volume -- ls -ltr /mnt
+kubectl exec secret-as-volume -- printenv | grep -i KUBECONFIG
+kubectl logs secret-as-volume
+
+Secret==sensitive content
+ConfigMap==non-sensitive content
+
+Need something other than HostPath -> outside the ecosystem
+
+--> use AWS EFS --> connect with persistent volume at cluster level
+
+FOR PERSISTENT VOLUME:
+
+RUN: 
+kubectl get persistentvolume
+
+RUN THE YML:
+22_persistentVol_EFS.yml
+
+things to note:
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany # Can be used from multiple Nodes at a same time
+  persistentVolumeReclaimPolicy: Recycle
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /
+    server: #some number from the AWS EFS
+
+RUN: 
+kubectl get persistentvolume
+
+TO ADD USAGE:
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sarah-pvc
+spec:
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+	
+----------------------------------------------------------------------
+VERSION CONTROL
+Shows:
+  What has changed
+  Who changed the code
+  When it was changed
+  Why it was changed (commit message)
+
+
+CVCS -> code is locally developed and then committed to the main/central repository
+
+DVCS -> Majority is DVCS -> Git -> Local Repo --> Remote Repo
