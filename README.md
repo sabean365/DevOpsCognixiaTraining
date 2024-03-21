@@ -10,3 +10,6 @@
 
 ## with Kubernetes
 - <img width="48" height="48" src="https://img.icons8.com/color/48/kubernetes.png" alt="kubernetes"/>
+
+## also using BitBucket
+<img width="48" height="48" src="https://img.icons8.com/color/48/bitbucket.png" alt="bitbucket"/>
