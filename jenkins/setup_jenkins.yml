@@ -1,0 +1,38 @@
+- name: Install Jenkins
+  hosts: all
+  become: yes
+  tasks:
+  - name: Install JDK
+    package:
+      name: openjdk-17-jdk
+      state: present
+      update_cache: yes
+  - name: Create Keyring folder
+    file:
+      state: directory
+      path: /usr/share/keyrings
+  - name: Adding GPG Key
+    get_url:
+      url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+      dest: /usr/share/keyrings/jenkins-keyring.asc
+  - name: Add APT repository for Jenkins
+    apt_repository:
+      repo: deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/
+      state: present
+      filename: "jenkins"
+      update_cache: yes
+  - name: Install Jenkins
+    package:
+      name: jenkins
+      state: present
+  - name: starting jenkins Service
+    service:
+      name: jenkins
+      state: started
+      enabled: yes
+  - name: Reading InitialAdminPassword
+    shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+    register: initialAdminPassword
+    ignore_errors: yes
+  - name: getting InitialAdminPassword
+    debug: var=initialAdminPassword.stdout_lines
