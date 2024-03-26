@@ -1,0 +1,83 @@
+Multinode K8S on EC2
+
+Control plane -> minimum of 2 CPU, 2GB
+
+Others -> small: 1 CPU, 2 GB
+
+COMMAND:
+to connect to the control plan from a node: sudo kubeadm join 172.31.49.234:6443 --token 4byh5l.n52bxw3apczmmn7r --discovery-token-ca-cert-hash sha256:897a5004e3151571075d49239349f79c41328d43d95334e6dd569182775be60e
+
+IF ERRORS:
+kubeadm resest -f
+
+COMMAND TO CHANGE HOSTNAME:
+sudo hostnamectl set-hostname thinknyx-app-node-sarah
+
+COMMAND: kubectl get nodes will throw error without $HOME/.kube/config file that holds keys
+
+NAMESPACES: segregate within clusters -> security policies control access
+
+kubectl get pods -A needed to show pods UNLESS you provide namespace
+kubectl get pods -n kube-public
+
+1. default (when there is no dedicated node/pod assigned)
+2. kube-node-lease (checks health, network, CPU, memory, etc -> hearbeat continually running in here)
+	COMMAND TO CHECK: kubectl get leases.coordination.k8s.io -n kube-node-lease
+3. kube-public (open to all) -> Google/FB -> read-only
+	COMMAND TO CHECK: kubectl get pods -n kube-public
+4. kube-system (namespace used by K8S to host or manage or create resources which are specifically needed for the functioning of the system)
+
+
+
+
+To set namespace:
+kubectl config get-contexts
+kubectl create namespace kul
+kubectl config get-contexts
+kubectl config set-context --current --namespace kul
+kubectl config get-contexts
+kubectl get pods
+
+Each namespace should have a limited amount of resource allocation:
+kubectl get resourcequotas
+kubectl get resourcequotas -A
+
+WRITE K8S MANIFESTS IN TERRAFORM REPO
+
+To add httpd to your own server - create a single container run by the pod in a namespace
+kubectl run httpd --image kulbhushanmayer/httpd:1.2
+kubectl get pods
+kubectl get pods -o wide
+kubectl describe pod httpd
+kubectl get pods -o wide
+kubectl describe nodes thinknyx-app-node-sarah
+kubectl describe pod httpd
+
+CREATE A MULTICONTAINER SEE 04_pod_multicontainer.yml
+to run: kubectl apply -f 04_pod_multicontainer.yml 
+
+other commands:
+kubectl delete pods --all
+kubectl apply -f 04_pod_multicontainer.yml
+kubectl get pods
+kubectl get pods -w
+kubectl get pods -o wide
+curl 10.10.45.195
+OUTPUTS: 
+<br>[INFO] Hi from httpd-1 at Mon Mar 18 16:19:44 UTC 2024.</br>
+
+curl 10.10.45.195:8080
+OUTPUTS: 
+Hello world
+
+HOW TO SPECIFY THE NODE:
+spec:
+  nodeSelector:
+    name: sarah
+  containers: ...
+  
+TO BLOCK OFF A PROBLEMATIC NODE:
+kubectl cordon -f <node>
+
+
+
