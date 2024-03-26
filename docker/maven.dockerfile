@@ -15,4 +15,4 @@ EOF
 RUN sh script.sh
 
 FROM kulbhushanmayer/tomcat:10.1.19 
-COPY --from=build $PATH/target/*.war /opt/app/tomcat/webapps/
+COPY --from=build $PATH/target/*.war /opt/app/tomcat/webapps/ #Add maven again
