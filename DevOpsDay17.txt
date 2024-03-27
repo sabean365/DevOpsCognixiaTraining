@@ -1,0 +1,112 @@
+THEORY::::THEORY!!!
+
+SRE need to do devops and monitoring
+
+Monitor + Log + Traces == Prometheus --> alerting ++ dashboarding (Grafana)
+
+Prometheus Information:
+	1. Open Source monitoring and alerting
+	2. Owned by CNCF
+	3. Infra/Cloud/Network/Contianer all ecosystems
+	4. TSDB - Time Series DB --> metrics
+	5. PromQL
+	
+Prometheus Architecture:
+	1. Prometheus server --> install Prometheus Server Software
+	2. Install exporters (agents) on servers/containers/network etc.
+	3. Scraping--> Scraping default == 15s --> Short-lived jobs == 1s or 5s <-- PUSH GATEWAY --> Prometheus server --> port 9090
+	4. Alert Manager --> email, sms, slack, MS Teams
+	5. Local Dashboard --> GUI --> can run PromQL in GUI
+	6. Service Discovery (can also use 3rd party) DNS based
+	
+	
+K8S - Kube API Server Port --> 6443 --> connect to K8S cluster
+	- 2379/2380 --> etcd
+	- 10250	--> Kubelet API
+	- 10259	--> kube-scheduler
+	- 10257	--> kube-controller-manager
+	
+Whenever you change the yml, you need to restart Prometheus
+
+yml --> jobs --> logical grouping of targets (labels) --> docker, mongoDB, linux servers, K8S
+
+PromQL -> Metrics types
+	1. counter
+	2. gauge
+	3. histogram
+	4. summary
+	
+	-> Operators
+	
+	-> Functions
+	
+up{instance="localhost:9090", job="prometheus"  1  (pop command)
+
+/etc/default/prometheus --> start up opts
+
+/etc/prometheus/prometheus.yml -->
+
+command line flags --> /etc/prometheus default
+
+CHALLENGE:
+INSTALL PROMETHEUS SERVER-->
+
+apt-get update
+
+apt-get install prometheus
+
+This will install Prometheus (works on 9090) and Prometheus-node-exporter (works on 9100)
+
+Check the status of Prometheus and Prometheus-node-exporter service using systemctl command
+
+This will going to install a default user named “Prometheus”:
+
+ps –u prometheus
+
+On browser put your Public Ip with port number 9090 to access Prometheus console (example http://ip:9090/)
+
+Explore various options in prometheus
+
+CHALLENGE:
+INSTALL EXPORTER ON NODE-->
+
+Login to the other server and install "apt update" && "prometheus-node-exporter" using apt-get install
+
+Check the ”prometheus-node-exporter” service is up or not 
+
+Now go back to your Prometheus server and edit prometheus.yaml file, under job_name node add another entry for targets – ['server-ip:9100']
+
+Once done use “promtool” to validate the Prometheus.yaml file using and restart Prometheus services
+
+“promtool check config /etc/prometheus/prometheus.yaml”
+
+Now go back to your dashboard and see if the target appeared or not.
+
+Note: If you see UNKNOW status, wait for couple of secs to get the status changed to UP
+
+Run a query (like up) and see if the data is getting captured for all TARGETS in the time series database or not
+
+
+########### set nu --> in vi to see numbered lines ###########
+
+ABOUT TIMESTAMPS:
+
+01 Jan 1970 --> NTP network time protocol
+
+Cronyd == NTP --> in Red Hat
+
+###########################
+
+VIDEOS TO WATCH:
+
+Prometheus: https://youtu.be/XXr8tMlUKfk?si=mflADRMC1YZUyKzR
+
+Grafana: https://youtu.be/yEJzXJzWEQg?si=5_JMpkYAAOLyZ6TT
+
+K8S Cluster: https://youtu.be/PMLUiPvPLEU?si=X0sIztuQhZkf8mFi
+
+hocker and K8S: https://youtu.be/Eic8WrGLgm4?si=x2_v-j3y6kkknyFM
+
+############################
+
+Study PromQL and LogQL
